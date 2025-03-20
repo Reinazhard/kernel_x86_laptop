@@ -1426,8 +1426,13 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
 				continue;
 			}
 			if (done_offset) {
-				*done_offset = start - 1;
-				return 0;
+				/*
+				 * Move @end to the end of the processed range,
+				 * and exit the loop to unlock the processed extents.
+				 */
+				end = start - 1;
+				ret = 0;
+				break;
 			}
 			ret = -ENOSPC;
 		}
@@ -2385,8 +2390,7 @@ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct folio *locked_fol
 
 out:
 	if (ret < 0)
-		btrfs_cleanup_ordered_extents(inode, locked_folio, start,
-					      end - start + 1);
+		btrfs_cleanup_ordered_extents(inode, NULL, start, end - start + 1);
 	return ret;
 }
 

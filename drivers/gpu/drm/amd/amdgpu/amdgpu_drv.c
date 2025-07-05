@@ -138,6 +138,7 @@ enum AMDGPU_DEBUG_MASK {
 };
 
 unsigned int amdgpu_vram_limit = UINT_MAX;
+int amdgpu_ignore_min_pcap = 0; /* do not ignore by default */
 int amdgpu_vis_vram_limit;
 int amdgpu_gart_size = -1; /* auto */
 int amdgpu_gtt_size = -1; /* auto */
@@ -261,6 +262,15 @@ struct amdgpu_watchdog_timer amdgpu_watchdog_timer = {
 	.timeout_fatal_disable = false,
 	.period = 0x0, /* default to 0x0 (timeout disable) */
 };
+
+/**
+ * DOC: ignore_min_pcap (int)
+ * Ignore the minimum power cap.
+ * Useful on graphics cards where the minimum power cap is very high.
+ * The default is 0 (Do not ignore).
+ */
+MODULE_PARM_DESC(ignore_min_pcap, "Ignore the minimum power cap");
+module_param_named(ignore_min_pcap, amdgpu_ignore_min_pcap, int, 0600);
 
 /**
  * DOC: vramlimit (int)
@@ -3087,6 +3097,11 @@ static int __init amdgpu_init(void)
 
 	/* Ignore KFD init failures. Normal when CONFIG_HSA_AMD is not set. */
 	amdgpu_amdkfd_init();
+
+	if (amdgpu_pp_feature_mask & PP_OVERDRIVE_MASK) {
+		add_taint(TAINT_CPU_OUT_OF_SPEC, LOCKDEP_STILL_OK);
+		pr_crit("Overdrive is enabled, please disable it before reporting any bugs.\n");
+	}
 
 	/* let modprobe override vga console setting */
 	return pci_register_driver(&amdgpu_kms_pci_driver);

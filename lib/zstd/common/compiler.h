@@ -150,9 +150,6 @@
 
 /* disable warnings */
 
-/*Like DYNAMIC_BMI2 but for compile time determination of BMI2 support*/
-
-
 /* compile time determination of SIMD support */
 
 /* C-language Attributes are added in C23. */
@@ -175,8 +172,14 @@
 #define ZSTD_FALLTHROUGH fallthrough
 
 /*-**************************************************************
-*  Alignment check
+*  Alignment
 *****************************************************************/
+
+/* @return 1 if @u is a 2^n value, 0 otherwise
+ * useful to check a value is valid for alignment restrictions */
+MEM_STATIC int ZSTD_isPower2(size_t u) {
+    return (u & (u-1)) == 0;
+}
 
 /* this test was initially positioned in mem.h,
  * but this file is removed (or replaced) for linux kernel
@@ -191,6 +194,12 @@
 #  define ZSTD_ALIGNOF(T) __alignof(T)
 
 #endif /* ZSTD_ALIGNOF */
+
+#ifndef ZSTD_ALIGNED
+/* C90-compatible alignment macro (GCC/Clang). Adjust for other compilers if needed. */
+#define ZSTD_ALIGNED(a) __attribute__((aligned(a)))
+#endif /* ZSTD_ALIGNED */
+
 
 /*-**************************************************************
 *  Sanitizer
@@ -215,7 +224,7 @@
 #endif
 
 /*
- * Helper function to perform a wrapped pointer difference without trigging
+ * Helper function to perform a wrapped pointer difference without triggering
  * UBSAN.
  *
  * @returns lhs - rhs with wrapping
@@ -234,9 +243,9 @@ ptrdiff_t ZSTD_wrappedPtrDiff(unsigned char const* lhs, unsigned char const* rhs
  */
 MEM_STATIC
 ZSTD_ALLOW_POINTER_OVERFLOW_ATTR
-unsigned char const* ZSTD_wrappedPtrAdd(unsigned char const* ptr, ptrdiff_t add)
+const void* ZSTD_wrappedPtrAdd(const void* ptr, ptrdiff_t add)
 {
-    return ptr + add;
+    return (const char*)ptr + add;
 }
 
 /*
@@ -247,9 +256,9 @@ unsigned char const* ZSTD_wrappedPtrAdd(unsigned char const* ptr, ptrdiff_t add)
  */
 MEM_STATIC
 ZSTD_ALLOW_POINTER_OVERFLOW_ATTR
-unsigned char const* ZSTD_wrappedPtrSub(unsigned char const* ptr, ptrdiff_t sub)
+const void* ZSTD_wrappedPtrSub(const void* ptr, ptrdiff_t sub)
 {
-    return ptr - sub;
+    return (const char*)ptr - sub;
 }
 
 /*
@@ -259,9 +268,9 @@ unsigned char const* ZSTD_wrappedPtrSub(unsigned char const* ptr, ptrdiff_t sub)
  * @returns `ptr + add` except it defines `NULL + 0 == NULL`.
  */
 MEM_STATIC
-unsigned char* ZSTD_maybeNullPtrAdd(unsigned char* ptr, ptrdiff_t add)
+void* ZSTD_maybeNullPtrAdd(void* ptr, ptrdiff_t add)
 {
-    return add > 0 ? ptr + add : ptr;
+    return add > 0 ? (char*)ptr + add : ptr;
 }
 
 /* Issue #3240 reports an ASAN failure on an llvm-mingw build. Out of an

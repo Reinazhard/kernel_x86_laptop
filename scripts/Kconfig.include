@@ -84,6 +84,9 @@ ld-version := $(shell,set -- $(ld-info) && echo $2)
 m32-flag := $(cc-option-str,-m32)
 m64-flag := $(cc-option-str,-m64)
 
+# Test whether the compiler can link userspace applications
+cc_can_link_user = $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(USERCFLAGS) $(USERLDFLAGS) $(1))
+
 rustc-version := $(shell,$(srctree)/scripts/rustc-version.sh $(RUSTC))
 rustc-llvm-version := $(shell,$(srctree)/scripts/rustc-llvm-version.sh $(RUSTC))
 

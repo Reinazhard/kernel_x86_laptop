@@ -105,7 +105,7 @@ __always_inline unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
 
 		local_irq_enable_exit_to_user(ti_work);
 
-		if (ti_work & _TIF_NEED_RESCHED) {
+		if (ti_work & _TIF_NEED_RESCHED | _TIF_NEED_RESCHED_LAZY) {
 #ifndef WITHOUT_ORACLE_EXTENSIONS
 			if (irq && rseq_delay_resched())
 				clear_tsk_need_resched(current);

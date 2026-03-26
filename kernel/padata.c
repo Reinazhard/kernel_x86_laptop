@@ -672,6 +672,7 @@ int __padata_do_multithreaded(struct padata_mt_job *job,
 	padata_works_free(&works);
 	return ps.error;
 }
+EXPORT_SYMBOL(__padata_do_multithreaded);
 
 static void __padata_list_init(struct padata_list *pd_list)
 {

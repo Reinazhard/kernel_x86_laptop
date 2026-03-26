@@ -874,6 +874,7 @@ extern int trace_event_get_offsets(struct trace_event_call *call);
 
 int ftrace_set_clr_event(struct trace_array *tr, char *buf, int set);
 int trace_set_clr_event(const char *system, const char *event, int set);
+EXPORT_SYMBOL_GPL(trace_set_clr_event);
 int trace_array_set_clr_event(struct trace_array *tr, const char *system,
 		const char *event, bool enable);
 /*

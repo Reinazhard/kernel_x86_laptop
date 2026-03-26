@@ -3646,6 +3646,7 @@ static void __exit vfio_iommu_type1_cleanup(void)
 module_init(vfio_iommu_type1_init);
 module_exit(vfio_iommu_type1_cleanup);
 
+MODULE_IMPORT_NS(IOMMUFD);
 MODULE_VERSION(DRIVER_VERSION);
 MODULE_LICENSE("GPL v2");
 MODULE_AUTHOR(DRIVER_AUTHOR);

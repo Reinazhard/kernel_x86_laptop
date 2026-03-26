@@ -302,6 +302,7 @@ struct iova_bitmap *iova_bitmap_alloc_remote(unsigned long iova, size_t length,
 {
 	return __iova_bitmap_alloc(iova, length, page_size, data, mm);
 }
+EXPORT_SYMBOL_NS_GPL(iova_bitmap_alloc_remote, IOMMUFD);
 
 /**
  * iova_bitmap_free() - Frees an IOVA bitmap object

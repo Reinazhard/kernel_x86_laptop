@@ -2,13 +2,16 @@
 # SPDX-License-Identifier: GPL-2.0+
 #
 # This determines how many parallel tasks "make" is expecting, as it is
-# not exposed via an special variables, reserves them all, runs a subprocess
-# with PARALLELISM environment variable set, and releases the jobs back again.
+# not exposed via any special variables, reserves them all, runs a subprocess
+# with PARALLELISM environment variable set and any %PARALLELISM% in its
+# arguments replaced by the count, and releases the jobs back again.
 #
 # https://www.gnu.org/software/make/manual/html_node/POSIX-Jobserver.html#POSIX-Jobserver
 from __future__ import print_function
 import os, sys, errno
 import subprocess
+
+PARALLELISM_TOKEN = "%PARALLELISM%"
 
 # Extract and prepare jobserver file descriptors from environment.
 claim = 0
@@ -68,7 +71,9 @@ except (KeyError, IndexError, ValueError, OSError, IOError) as e:
 if claim > 0:
 	os.environ['PARALLELISM'] = '%d' % (claim)
 
-rc = subprocess.call(sys.argv[1:])
+parallelism = str(claim or 1)
+cmd = [arg.replace(PARALLELISM_TOKEN, parallelism) for arg in sys.argv[1:]]
+rc = subprocess.call(cmd)
 
 # Return all the reserved slots.
 if len(jobs):

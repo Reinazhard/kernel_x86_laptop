@@ -49,6 +49,7 @@ squashfs-tools         4.0              mksquashfs -version
 btrfs-progs            0.18             btrfsck
 pcmciautils            004              pccardctl -V
 quota-tools            3.09             quota -V
+pigz (optional)        2.4              pigz --version
 PPP                    2.4.0            pppd --version
 nfs-utils              1.0.5            showmount --version
 procps                 3.2.0            ps --version
@@ -198,6 +199,13 @@ GNU AWK
 
 GNU AWK is needed if you want kernel builds to generate address range data for
 builtin modules (CONFIG_BUILTIN_MODULE_RANGES).
+
+pigz (optional)
+---------------
+
+pigz is a parallel implementation of gzip. If it is installed the compressed
+kernel image is produced with it rather than with gzip, see ``KPGZIP`` in
+Documentation/kbuild/kbuild.rst.
 
 System utilities
 ****************

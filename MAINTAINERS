@@ -12248,6 +12248,7 @@ Q:	https://patchwork.kernel.org/project/linux-kbuild/list/
 T:	git git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git kbuild
 F:	Documentation/kbuild/kconfig*
 F:	scripts/Kconfig.include
+F:	scripts/Kconfig.toolchain
 F:	scripts/kconfig/
 
 KCOV

@@ -3,7 +3,7 @@
 # scripts contains sources for various helper programs used throughout
 # the kernel for the build process.
 
-hostprogs-always-$(CONFIG_KALLSYMS)			+= kallsyms
+hostprogs-always-y				+= kallsyms
 hostprogs-always-$(BUILD_C_RECORDMCOUNT)		+= recordmcount
 hostprogs-always-$(CONFIG_BUILDTIME_TABLE_SORT)		+= sorttable
 hostprogs-always-$(CONFIG_ASN1)				+= asn1_compiler
@@ -12,6 +12,7 @@ hostprogs-always-$(CONFIG_SYSTEM_EXTRA_CERTIFICATE)	+= insert-sys-cert
 hostprogs-always-$(CONFIG_RUST_KERNEL_DOCTESTS)		+= rustdoc_test_builder
 hostprogs-always-$(CONFIG_RUST_KERNEL_DOCTESTS)		+= rustdoc_test_gen
 
+kallsyms-objs := kallsyms.o kallsyms-sysmap.o elf-parse.o
 sorttable-objs := sorttable.o elf-parse.o
 
 ifneq ($(or $(CONFIG_X86_64),$(CONFIG_X86_32)),)
@@ -27,6 +28,8 @@ generate_rust_target-rust := y
 rustdoc_test_builder-rust := y
 rustdoc_test_gen-rust := y
 
+HOSTCFLAGS_kallsyms.o = -I$(srctree)/tools/include
+HOSTCFLAGS_kallsyms-sysmap.o = -I$(srctree)/tools/include
 HOSTCFLAGS_elf-parse.o = -I$(srctree)/tools/include
 HOSTCFLAGS_sorttable.o = -I$(srctree)/tools/include
 HOSTLDLIBS_sorttable = -lpthread

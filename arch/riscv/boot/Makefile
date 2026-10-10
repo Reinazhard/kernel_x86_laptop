@@ -42,7 +42,7 @@ endif
 	$(call if_changed,objcopy)
 
 $(obj)/Image.gz: $(obj)/Image FORCE
-	$(call if_changed,gzip)
+	+$(call if_changed,gzip)
 
 $(obj)/loader.o: $(src)/loader.S $(obj)/Image
 

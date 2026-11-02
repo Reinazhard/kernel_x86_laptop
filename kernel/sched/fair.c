@@ -11403,7 +11403,7 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
 	unsigned long sum_util = 0;
 	bool sg_overloaded = 0, sg_overutilized = 0;
 
-	env->dst_core_idle = !sched_smt_active() || is_core_idle(env->dst_cpu);
+	env->dst_core_idle = !sched_smt_active() || sched_smt_siblings_idle(env->dst_cpu);
 
 	do {
 		struct sg_lb_stats *sgs = &tmp_sgs;
